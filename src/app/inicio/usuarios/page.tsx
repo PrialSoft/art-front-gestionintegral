@@ -544,16 +544,16 @@ const handleSubmit = async (data: UsuarioFormFields) => {
       };
 
       const baseSuccessTitle = successTitles[method as keyof typeof successTitles] || "Operación completada exitosamente";
-      const successTitle = successSecondaryMessage
-        ? `${baseSuccessTitle}. ${successSecondaryMessage}`
+      const defaultSuccessMessage =
+        successBodyMessages[method as keyof typeof successBodyMessages] ||
+        "Operación completada";
+      const modalTitleToShow = successSecondaryMessage
+        ? defaultSuccessMessage
         : baseSuccessTitle;
-      const successMessage = successBodyMessages[method as keyof typeof successBodyMessages] || "Operación completada";
-      showModalMessage(
-        successMessage,
-        "success",
-        undefined,
-        successTitle
-      );
+      const modalMessageToShow = successSecondaryMessage
+        ? successSecondaryMessage
+        : defaultSuccessMessage;
+      showModalMessage(modalMessageToShow, "success", undefined, modalTitleToShow);
       if (method !== "create" || !successSecondaryMessage) {
         handleCloseModal();
       }

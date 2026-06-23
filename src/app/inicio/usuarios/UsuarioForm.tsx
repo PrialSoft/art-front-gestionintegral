@@ -191,6 +191,9 @@ export interface TouchedFields {
 export const LEYENDA_ASOCIAR_EMPRESA_ANTES_DE_GUARDAR =
   "Debe asociar al menos una empresa desde la solapa 'Empresas del usuario' antes de guardar los cambios.";
 
+// Título a mostrar cuando el usuario ya fue registrado pero necesita relacionar empresas
+export const TITULO_USUARIO_REGISTRADO = "Usuario Registrado";
+
 export default function UsuarioForm({
   open,
   onClose,
@@ -569,10 +572,10 @@ export default function UsuarioForm({
         }
       }
     } else if (name === "matricula") {
-      const numericValue = value.replace(/\D/g, '');
+      const matriculaValue = form.rol === "SeguridadEHigiene" ? value : value.replace(/\D/g, '');
       setForm((prev: UsuarioFormFields) => ({
         ...prev,
-        [name]: numericValue,
+        [name]: matriculaValue,
       }));
     } else {
       setForm((prev: UsuarioFormFields) => ({
@@ -1035,7 +1038,7 @@ export default function UsuarioForm({
                   fullWidth
                   required={!isDisabled && requiresTituloMatricula}
                   disabled={isDisabled}
-                  inputProps={{ inputMode: 'numeric', pattern: '[0-9]*' }}
+                  inputProps={form.rol === "SeguridadEHigiene" ? undefined : { inputMode: 'numeric', pattern: '[0-9]*' }}
                 />
               </div>
 

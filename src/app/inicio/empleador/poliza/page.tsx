@@ -7,9 +7,7 @@ import { useAuth } from "@/data/AuthContext";
 import { TextField, Box } from "@mui/material";
 import Formato from "@/utils/Formato";
 import SrtAPI from "@/data/srtAPI";
-import ArtAPI from '@/data/artAPI';
 import AuthAPI from '@/data/authAPI';
-import type { ComercializadorById, VComercializadorRow } from '@/app/inicio/comercializador/administracionComercializadores/types/administracionUsuarios';
 import CustomButton from "@/utils/ui/button/CustomButton";
 import { BsDownload } from "react-icons/bs";
 import { saveAs } from "file-saver";
@@ -144,11 +142,10 @@ const Poliza = () => {
     return `${(empresa as any)?.razonSocial ?? ""} - ${cuitFormateado}`;
   };
 
-  const srtIdRawGlobal = polizaRawData?.srtComercializadorInterno ?? 0;
-  const srtIdGlobal = Number(String(srtIdRawGlobal ?? 0).replace(/\D/g, ""));
-  const { data: comercializadorByIdData } = ArtAPI.useGetComercializadorById(
-    Number.isFinite(srtIdGlobal) && srtIdGlobal > 0 ? ({ id: srtIdGlobal } as unknown as ComercializadorById) : undefined
-  );
+  const formatCanalComercialValue = (value: unknown): string => {
+    const formatted = String(value ?? "").trim();
+    return formatted || "-----------";
+  };
 
   // Cargar parámetros de entidad (entidadId = 0) para Datos de la Aseguradora
   const { data: parametrosEntidadData } = AuthAPI.useGetParametrosEntidadURL({
@@ -281,65 +278,29 @@ const Poliza = () => {
 
       {/* Sección de Canal Comercial */}
       <h3 className={styles.sectionTitle}>Canal Comercial</h3>
-      {
-        (() => {
-          const comercializador = (comercializadorByIdData as VComercializadorRow) ?? null;
-
-          if (Number.isFinite(srtIdGlobal) && srtIdGlobal > 0) {
-            return (
-              <div className={styles.dataGrid}>
-                <TextField
-                  label="CUIT/CUIL:"
-                  name="cuitcuil"
-                  value={String(comercializador?.cuil ?? "-----------")}
-                  fullWidth
-                  variant="standard"
-                />
-                <TextField
-                  label="Matricula:"
-                  name="Matricula"
-                  value={String(comercializador?.matricula ?? "-----------")}
-                  fullWidth
-                  variant="standard"
-                />
-                <TextField
-                  label="Apellido y Nombre/Denominación:"
-                  name="apellidoynombre"
-                  value={String(comercializador?.referenteRazonSocial ?? "-----------")}
-                  fullWidth
-                  variant="standard"
-                />
-              </div>
-            );
-          }
-
-          return (
-            <div className={styles.dataGrid}>
-              <TextField
-                label="CUIT/CUIL:"
-                name="cuitcuil"
-                value="-----------"
-                fullWidth
-                variant="standard"
-              />
-              <TextField
-                label="Matricula:"
-                name="Matricula"
-                value="-----------"
-                fullWidth
-                variant="standard"
-              />
-              <TextField
-                label="Apellido y Nombre/Denominación:"
-                name="apellidoynombre"
-                value="-----------"
-                fullWidth
-                variant="standard"
-              />
-            </div>
-          );
-        })()
-      }
+      <div className={styles.dataGrid}>
+        <TextField
+          label="CUIT/CUIL:"
+          name="cuitcuil"
+          value={formatCanalComercialValue(polizaRawData?.comercializadorCuil)}
+          fullWidth
+          variant="standard"
+        />
+        <TextField
+          label="Matricula:"
+          name="Matricula"
+          value={formatCanalComercialValue(polizaRawData?.comercializadorMatricula)}
+          fullWidth
+          variant="standard"
+        />
+        <TextField
+          label="Apellido y Nombre/Denominación:"
+          name="apellidoynombre"
+          value={formatCanalComercialValue(polizaRawData?.comercializadorReferenteRazonSocial)}
+          fullWidth
+          variant="standard"
+        />
+      </div>
 
       {/* Sección de Datos del Empleador */}
       <h3 className={styles.sectionTitle}>Datos del Empleador</h3>
