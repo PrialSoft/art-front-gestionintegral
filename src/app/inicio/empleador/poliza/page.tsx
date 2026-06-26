@@ -31,7 +31,11 @@ const Poliza = () => {
   
   // Obtener la póliza priorizando el CUIT forzado por query param (viene desde comercializador)
   const { data: polizaRawData, isLoading: isPersonalLoading } = useGetPoliza(
-    Number.isFinite(cuitForzado) && cuitForzado > 0 ? { CUIT: cuitForzado } : empresaSeleccionada ? { CUIT: empresaSeleccionada.cuit }: {}
+    Number.isFinite(cuitForzado) && cuitForzado > 0
+      ? { CUIT: cuitForzado, VerIndependientes: true }
+      : empresaSeleccionada
+      ? { CUIT: empresaSeleccionada.cuit, VerIndependientes: true }
+      : {}
   );
 
   // Seleccionar automáticamente si solo hay una empresa

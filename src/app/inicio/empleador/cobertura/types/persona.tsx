@@ -8,6 +8,7 @@ export type Persona = {
 
 export type Parameters = {
   CUIT?: number;
+  VerIndependientes?: boolean;
   periodo?: number;
   page?: string;
   sort?: string;
